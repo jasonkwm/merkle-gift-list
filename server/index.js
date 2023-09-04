@@ -7,21 +7,19 @@ const port = 1225;
 const app = express();
 app.use(express.json());
 
-// TODO: hardcode a merkle root here representing the whole nice list
-// paste the hex string in here, without the 0x prefix
+// HERE: Merkle Tree & Merkle Root
 const merkleTree = new MerkleTree(niceList);
 const MERKLE_ROOT = merkleTree.getRoot();
 
 app.post("/gift", (req, res) => {
     // grab the parameters from the front-end here
     const body = req.body;
-    // TODO: prove that a name is in the list
+    // HERE: Check if name is in the list
     const index = niceList.findIndex((n) => n === body.name);
     const isInTheList = verifyProof(merkleTree.getProof(index), body.name, MERKLE_ROOT);
     if (isInTheList) {
         res.send("You got a toy robot!");
     } else {
-        // res.send(proof);
         res.send("You are not on the list :(");
     }
 });
